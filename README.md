@@ -1,1 +1,1 @@
-Program for Searching in Arrays and Search and Traversing Trees
+Program for searching in arrays and traversing trees
