@@ -9,8 +9,9 @@
 using namespace std;
 
 bool validate_userFile(string& userFile);
-void generate_numFile(string& userFile);
+void generate_numFile(string& numFile);
 void numFile_to_vector(ifstream& dataFile);
+void fillTree(vector<int> numVec);
 
 int main()
 {
@@ -77,18 +78,22 @@ bool validate_userFile(string& userFile)
 	}
 }
 
-void generate_numFile(string& userFile)
+void generate_numFile(string& numFile)
 {
-	ofstream numFile(userFile, ios::out);
+	ofstream generatedFile(numFile, ios::out);
 
 	srand((unsigned int)time(NULL));	// use system time as seed for rand(), otherwise rand() produces the same number repeatedly
 
 	for (unsigned int x = 0; x < 150; x++)
 	{
-		int num = rand() % 100 + 1;	// generate random number between 1 and 100
-		numFile << num << " ";
+		int num = rand() % 1000 + 1;	// generate random number between 1 and 1000
+		generatedFile << num << " ";
 	}
-	numFile.close();
+	generatedFile.close();
+
+	ifstream file(numFile, ios::in);
+	numFile_to_vector(file);
+	file.close();
 }
 
 void numFile_to_vector(ifstream& dataFile)
@@ -103,4 +108,34 @@ void numFile_to_vector(ifstream& dataFile)
 	{
 		cout << numVec[x] << " ";
 	}
+	fillTree(numVec);
+}
+
+void fillTree(vector<int> numVec)
+{
+	BST tree;
+	Node* root = NULL; // Creating an empty tree
+
+	for (int n = 0; n < numVec.size(); n++)
+	{
+		root = tree.Insert(root, numVec[n]);
+	}
+
+	bool more;
+	do {
+		int number;
+		cout << "Enter number be searched: ";
+		cin >> number;
+
+		if (tree.Search(root, number) == true)
+		{
+			cout << "Found\n";
+			more = true;
+		}
+		else
+		{
+			cout << "Not Found\n";
+			more = true;
+		}
+	} while (more);
 }
