@@ -75,7 +75,7 @@ bool validate_userFile(string& userFile)
 			cout << "File name entry does not contain a valid file extension (.txt / .dat)" << endl;
 			return false;
 		}
-	}
+	}  
 }
 
 void generate_numFile(string& numFile)
