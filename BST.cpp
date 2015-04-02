@@ -11,7 +11,7 @@ Node* BST::GetNewNode(int data)	// creates a new Node in heap
 	Node* newNode = new Node();
 	newNode->data = data;
 	newNode->left = newNode->right = NULL;
-	return newNode;
+	return newNode;  
 }
 
 Node* BST::Insert(Node* root, int data)	// Inserts data in BST, returns address of root node
