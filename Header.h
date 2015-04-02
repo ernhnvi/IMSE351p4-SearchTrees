@@ -14,7 +14,7 @@ public:
 	BST();
 	Node* GetNewNode(int data);
 	Node* Insert(Node* root, int data);
-	bool Search(Node* root, int data);
+	bool Search(Node* root, int data); 
 };
 
 #endif 
