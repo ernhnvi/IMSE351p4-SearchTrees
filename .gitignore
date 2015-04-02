@@ -1,7 +1,15 @@
 *.vcxproj
 *.vcxproj.filters
 
+*.tlog
+*.log
+*.idb
+*.pdb
+
 *.opensdf
 *.sdf
 *.sln
 *.v12.suo
+
+*.txt
+*.dat
