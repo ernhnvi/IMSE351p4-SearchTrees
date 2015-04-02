@@ -13,3 +13,6 @@
 
 *.txt
 *.dat
+
+*.exe
+*.obj
