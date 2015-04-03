@@ -1,5 +1,7 @@
 #include "Header.h"
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 BST::BST()
 {
@@ -48,5 +50,35 @@ bool BST::Search(Node* root, int data)	// Searches an element in BST, returns tr
 	else 
 	{
 		return Search(root->right, data);
+	}	
+}
+
+void BST::Print_InOrder(Node* root)
+{
+	if (root != NULL)
+	{
+		Print_InOrder(root->left);		// left leaf
+		std::cout << root->data << " ";			// node
+		Print_InOrder(root->right);	// right leaf
+	}
+}
+
+void BST::Print_PreOrder(Node* root)
+{
+	if (root != NULL)
+	{
+		std::cout << root->data << " ";			// node
+		Print_PreOrder(root->left);	// left leaf
+		Print_PreOrder(root->right);	// right leaf
+	}
+}
+
+void BST::Print_PostOrder(Node* root)
+{
+	if (root != NULL)
+	{
+		Print_PostOrder(root->left);	// left leaf
+		Print_PostOrder(root->right);	// right leaf
+		std::cout << root->data << " ";			// node
 	}
 }
