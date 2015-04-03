@@ -2,6 +2,7 @@
 #define HEADER_H
 
 #include <fstream>
+#include <vector>
 
 struct Node 
 {
@@ -21,6 +22,11 @@ public:
 	void Print_InOrder(Node* root);
 	void Print_PreOrder(Node* root);
 	void Print_PostOrder(Node* root);
+
+	std::vector<int> fill_ascendingVec(Node* root);
+	void print_ascendingVec();
+
+	std::vector<int> ascendingVec;
 };
 
 #endif 

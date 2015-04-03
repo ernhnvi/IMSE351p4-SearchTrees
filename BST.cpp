@@ -2,10 +2,11 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <vector>
 
 BST::BST()
 {
-	
+	this->ascendingVec;
 }
 
 Node* BST::GetNewNode(int data)	// creates a new Node in heap
@@ -58,8 +59,9 @@ void BST::Print_InOrder(Node* root)
 	if (root != NULL)
 	{
 		Print_InOrder(root->left);		// left leaf
-		std::cout << root->data << " ";			// node
-		Print_InOrder(root->right);	// right leaf
+		std::cout << root->data << " ";	// node
+		fill_ascendingVec(root);	// fills ascendingVec with each node's data value in ascending order
+		Print_InOrder(root->right);		// right leaf
 	}
 }
 
@@ -67,8 +69,8 @@ void BST::Print_PreOrder(Node* root)
 {
 	if (root != NULL)
 	{
-		std::cout << root->data << " ";			// node
-		Print_PreOrder(root->left);	// left leaf
+		std::cout << root->data << " ";	// node
+		Print_PreOrder(root->left);		// left leaf
 		Print_PreOrder(root->right);	// right leaf
 	}
 }
@@ -79,6 +81,22 @@ void BST::Print_PostOrder(Node* root)
 	{
 		Print_PostOrder(root->left);	// left leaf
 		Print_PostOrder(root->right);	// right leaf
-		std::cout << root->data << " ";			// node
+		std::cout << root->data << " ";	// node
 	}
+}
+
+std::vector<int> BST::fill_ascendingVec(Node* root)
+{
+	ascendingVec.push_back(root->data);
+
+	return ascendingVec;
+}
+
+void BST::print_ascendingVec()
+{
+	for (int a = 0; a < 150; a++)
+	{
+		std::cout << ascendingVec[a] << " ";
+	}
+	std::cout << std::endl;
 }

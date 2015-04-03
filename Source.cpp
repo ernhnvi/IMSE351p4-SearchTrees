@@ -203,7 +203,7 @@ void printOrderedTree(vector<int> numVec, BST tree, Node* root)
 		width = (csbi.dwSize.X);
 	}
 
-	vector<string> printLabel = { " FromFile ", " In Order ", " PreOrder ", " Post Order " };
+	vector<string> printLabel = { " FromFile ", " In Order ", " PreOrder ", " Post Order ", " AscendingVec " };
 
 	for (unsigned int p = 0; p < printLabel.size(); p++)
 	{
@@ -239,6 +239,10 @@ void printOrderedTree(vector<int> numVec, BST tree, Node* root)
 			break;
 		case 3:
 			tree.Print_PostOrder(root);
+			cout << endl;
+			break;
+		case 4:
+			tree.print_ascendingVec();
 			cout << endl;
 			break;
 		}
