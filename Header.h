@@ -23,10 +23,14 @@ public:
 	void Print_PreOrder(Node* root);
 	void Print_PostOrder(Node* root);
 
-	std::vector<int> fill_ascendingVec(Node* root);
-	void print_ascendingVec();
+	std::vector<int> get_sorted(Node* root);
+	void print_sortedVec();
 
-	std::vector<int> ascendingVec;
+	void resetBSTcomparison();
+	int getBSTcomparison();
+
+	std::vector<int> sorted;
+	int comparisons;
 };
 
 #endif 
