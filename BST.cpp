@@ -1,12 +1,13 @@
 #include "Header.h"
 #include <iostream>
-#include <fstream>
-#include <sstream>
+//#include <fstream>
+//#include <sstream>
 #include <vector>
 
 BST::BST()
 {
-	this->ascendingVec;
+	this->sorted;
+	this->comparisons;
 }
 
 Node* BST::GetNewNode(int data)	// creates a new Node in heap
@@ -36,7 +37,7 @@ Node* BST::Insert(Node* root, int data)	// Inserts data in BST, returns address 
 
 bool BST::Search(Node* root, int data)	// Searches an element in BST, returns true if element is found
 {
-	if (root == NULL) 
+	if (root == NULL)
 	{
 		return false;
 	}
@@ -46,12 +47,14 @@ bool BST::Search(Node* root, int data)	// Searches an element in BST, returns tr
 	}
 	else if (data <= root->data) 
 	{
+		comparisons++;
 		return Search(root->left, data);
 	}
 	else 
 	{
+		comparisons++;
 		return Search(root->right, data);
-	}	
+	}
 }
 
 void BST::Print_InOrder(Node* root)
@@ -60,7 +63,7 @@ void BST::Print_InOrder(Node* root)
 	{
 		Print_InOrder(root->left);		// left leaf
 		std::cout << root->data << " ";	// node
-		fill_ascendingVec(root);	// fills ascendingVec with each node's data value in ascending order
+		get_sorted(root);	// fills ascendingVec with each node's data value in ascending order
 		Print_InOrder(root->right);		// right leaf
 	}
 }
@@ -85,18 +88,28 @@ void BST::Print_PostOrder(Node* root)
 	}
 }
 
-std::vector<int> BST::fill_ascendingVec(Node* root)
+std::vector<int> BST::get_sorted(Node* root)
 {
-	ascendingVec.push_back(root->data);
+	sorted.push_back(root->data);
 
-	return ascendingVec;
+	return sorted;
 }
 
-void BST::print_ascendingVec()
+void BST::print_sortedVec()
 {
 	for (int a = 0; a < 150; a++)
 	{
-		std::cout << ascendingVec[a] << " ";
+		std::cout << sorted[a] << " ";
 	}
 	std::cout << std::endl;
+}
+
+void BST::resetBSTcomparison()
+{
+	comparisons = 0;
+}
+
+int BST::getBSTcomparison()
+{
+	return comparisons;
 }
