@@ -1,4 +1,4 @@
-#include "Header.h"
+#include "Data_Structure.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -11,14 +11,9 @@ using namespace std;
 
 string generate_numFile();
 string validate_userFile();
-vector<int> numFile_to_vector(string& fileName);
-void fillTree(vector<int> unsorted, BST &tree, Node* &root);
-void printOrderedTree(vector<int> unsorted, BST &tree, Node* &root);
-void numEntry(BST &tree, Node* &root, vector<int> &unsorted);
-
-void unsorted_comparisons(vector<int> &unsorted, int &numEntry);
-void BST_comparisons(BST &tree);
-void sorted_comparison(BST &tree, Node* &root, int &numEntry);
+void fillTree(Node* &root);
+void printTree(DataStructure &ds, Node* &root);
+void numEntry(DataStructure &ds, Node* &root);
 
 int main()
 {
@@ -51,14 +46,13 @@ int main()
 		break;
 	}
 
-	BST tree;
+	DataStructure ds;
 	Node* root = NULL;
-	vector<int> unsorted = numFile_to_vector(file);
 
-	fillTree(unsorted, tree, root);
-	printOrderedTree(unsorted, tree, root);
-
-	numEntry(tree, root, unsorted);
+	ds.unsorted_fill(file);
+	ds.fillTree(root);
+	printTree(ds, root);
+	numEntry(ds, root);
 
 	return 0;
 }
@@ -88,6 +82,7 @@ string validate_userFile()
 
 	vector<string> ext = { ".txt", ".dat" };
 	vector<string> matchingFiles;
+
 	ifstream dataFile(fileName, ios::in);
 
 	if (!dataFile)
@@ -147,43 +142,22 @@ string validate_userFile()
 				stringstream ss;
 				ss << response;
 				int y;
-				ss >> y;		// convert char entry from response to integer to use it in retrieving the vector index
+				ss >> y;	// convert char entry from response to integer to use it in retrieving the vector index
 
 				return matchingFiles[y - 1];	// subtract 1 because user was presented with file list that began counting from 1
 			}
 		}
 	}
-	else if (dataFile)		// able to successfully open the file cooresponding to userFile entry
+	else if (dataFile)	// able to successfully open the file cooresponding to userFile entry
 	{
 		dataFile.close();
 		return fileName;
 	}
 }
 
-vector<int> numFile_to_vector(string& fileName)
-{
-	ifstream dataFile(fileName, ios::in);
-	string line;
-	getline(dataFile, line);
-	dataFile.close();
-	stringstream ss(line);
-	vector<int>unsorted_temp((istream_iterator<int>(ss)), (istream_iterator<int>()));		// populate unsorted with integers in stringstream ss 
-	
-	return unsorted_temp;
-}
-
-void fillTree(vector<int> unsorted, BST &tree, Node* &root)
-{
-	for (unsigned int n = 0; n < unsorted.size(); n++)
-	{
-		root = tree.Insert(root, unsorted[n]);
-	}
-}
-
-void printOrderedTree(vector<int> unsorted, BST &tree, Node* &root)
+void printTree(DataStructure &ds, Node* &root)
 {
 	int width;
-
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	int nonZero = GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
 	if (nonZero)
@@ -211,27 +185,26 @@ void printOrderedTree(vector<int> unsorted, BST &tree, Node* &root)
 		switch (p)
 		{
 		case 0:
-			for (unsigned int x = 0; x < unsorted.size(); x++)
-			{
-				cout << unsorted[x] << " ";
-			}
+			ds.unsorted_print();
 			cout << endl;
 			break;
 		case 1:
-			tree.Print_InOrder(root);
+			ds.searchTree_printInOrder(root);
 			cout << endl;
 			break;
 		case 2:
-			tree.Print_PreOrder(root);
+			ds.searchTree_printPreOrder(root);
 			cout << endl;
 			break;
 		case 3:
-			tree.Print_PostOrder(root);
+			ds.searchTree_printPostOrder(root);
 			cout << endl;
 			break;
 		case 4:
-			tree.print_sortedVec();
+			ds.sorted_print();
 			cout << endl;
+			break;
+		default:
 			break;
 		}
 		cout << std::endl;
@@ -239,12 +212,11 @@ void printOrderedTree(vector<int> unsorted, BST &tree, Node* &root)
 	system("PAUSE");
 }
 
-void numEntry(BST &tree, Node* &root, vector<int> &unsorted)
+void numEntry(DataStructure &ds, Node* &root)
 {
-	int numEntry;
 	int inCounter = 5;
 	int outCounter = 5;
-
+	int numEntry;
 	vector<int> inList;
 	vector<int> outList;
 
@@ -264,9 +236,8 @@ void numEntry(BST &tree, Node* &root, vector<int> &unsorted)
 			cout << outList[i] << " ";
 		}
 		cout << "\n\n";
-
 		cout << "Enter " << 10 - inList.size() + outList.size() << " numbers" << endl;
-		cout << inCounter << " that are from the number list " << endl;
+		cout << inCounter  << " that are from the number list " << endl;
 		cout << outCounter << " that are not in the number list" << endl;
 		cin >> numEntry;
 
@@ -277,99 +248,70 @@ void numEntry(BST &tree, Node* &root, vector<int> &unsorted)
 		}
 		else
 		{
-			if (tree.Search(root, numEntry) && inCounter != 0)
+			bool inFull = false; bool outFull = false;
+			while (!inFull || !outFull)
 			{
-				inCounter--;
-				inList.push_back(numEntry);
-				unsorted_comparisons(unsorted, numEntry);
-				BST_comparisons(tree);
-				sorted_comparison(tree, root, numEntry);
-			}
-			else if (tree.Search(root, numEntry) && inCounter == 0)
-			{
-				cout << "5 number entries that match numbers in list already exist." << endl;
+				if (ds.unsorted_search(numEntry))
+				{
+					if (inCounter == 0)
+					{
+						cout << "5 number entries that match numbers in list already exist." << endl;
+						inFull = true;
+						system("PAUSE");
+						ds.comparisonReset();
+						break;
+					}
+					else
+					{
+						cout << "Unsorted: " << ds.comparisonCount() << endl;
+					}
+				}
+				else
+				{
+					if (outCounter == 0)
+					{
+						cout << "5 number entries that match numbers in list already exist." << endl;
+						outFull = true;
+						system("PAUSE");
+						ds.comparisonReset();
+						break;
+					}
+					else
+					{
+						cout << "Unsorted: NOT FOUND" << endl;
+					}
+				}
+				ds.comparisonReset();
+
+				if (ds.searchTree_Search(root, numEntry))
+				{
+					cout << "BinSearchTree: " << ds.comparisonCount() << endl;
+					inCounter--;
+				}
+				else
+				{
+					cout << "BinSearchTree: NOT FOUND" << endl;
+					outCounter--;
+				}
+				ds.comparisonReset();
+
+				if (ds.sorted_binarySearch(numEntry))
+				{
+					cout << "Sorted: " << ds.comparisonCount() << endl;
+					inList.push_back(numEntry);
+				}
+				else
+				{
+					cout << "Sorted: NOT FOUND" << endl;
+					outList.push_back(numEntry);
+				}
+				ds.comparisonReset();
+
 				system("PAUSE");
+				break;
 			}
-
-			else if (!tree.Search(root, numEntry) && outCounter != 0)
-			{
-				outCounter--;
-				outList.push_back(numEntry);
-				unsorted_comparisons(unsorted, numEntry);
-				BST_comparisons(tree);
-				sorted_comparison(tree, root, numEntry);
-			}
-			else if (!tree.Search(root, numEntry) && outCounter == 0)
-			{
-				cout << "5 number entries that do not match numbers in list already exist." << endl;
-				system("PAUSE");
-			}
+			system("CLS");
+			cout << "Entry Complete" << endl;
 		}
-	}
-	if (inList.size() + outList.size() == 10)
-	{
-		system("CLS");
-		cout << "Entry Complete" << endl;
-	}
-}
-
-void unsorted_comparisons(vector<int> &unsorted, int &numEntry)
-{
-	for (unsigned int x = 0; x < unsorted.size(); x++)
-	{
-		if (unsorted[x] == numEntry)
-		{
-			cout << "unsorted: " << x << endl;
-			break;
-		}
-		else if ((x == unsorted.size() - 1) && unsorted[x] != numEntry)
-		{
-			cout << "Unsorted: IMPOSSIBRU!!!" << endl;
-		}
-	}
-}
-
-void BST_comparisons(BST &tree)
-{
-	cout << "BST: " << tree.getBSTcomparison() << endl;
-	tree.resetBSTcomparison();
-}
-
-void sorted_comparison(BST &tree, Node* &root, int &numEntry)
-{
-	vector<int> sorted = tree.get_sorted(root);
-
-	int low = 0;
-	int mid;
-	int high = sorted.size() - 1;
-
-	int comparisons = 0;
-
-	while (low <= high)
-	{
-		mid = (low + high) / 2;
-
-		if (numEntry == sorted[mid])
-		{
-			cout << "Sorted: " << comparisons << endl;
-			system("PAUSE");
-			break;
-		}
-		else if (numEntry > sorted[mid])
-		{
-			comparisons++;
-			low = mid + 1;
-		}
-		else if (numEntry < sorted[mid])
-		{
-			comparisons++;
-			high = mid - 1;
-		}
-	}
-
-	if (low > high)
-	{
-		cout << "Sorted: not found" << endl;
-		system("PAUSE");
 	}
 }
