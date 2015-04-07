@@ -34,9 +34,17 @@ public:
 	int comparisonCount();
 	void comparisonReset();
 
+	int get_linear_total();
+	int get_BST_total();
+	int get_BSA_total();
+
 	std::vector<int> unsorted;
 	std::vector<int> sorted;
 	int comparisons;
+
+	int linear_total = 0;
+	int BST_total = 0;
+	int BSA_total = 0;
 };
 
 #endif 
